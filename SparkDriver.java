@@ -37,6 +37,7 @@ public class SparkDriver {
 			TrainingOptions opts = new TrainingOptions();
 
 			opts.setTargetVariable(targetVariable).addFeatureVariables(featureVariables);
+			opts.setAutoSave(true).setModelName("test");
 
 			/*
 			 * try to load the data
@@ -50,6 +51,7 @@ public class SparkDriver {
 			DataFrame dfOutput = tf.execute(dfInput, opts);
 
 			dfOutput.show();
+
 			break;
 		}
 		}

@@ -4,7 +4,9 @@ import java.util.List;
 public class TrainingOptions {
 	private double testFactor = 0.1;
 	private String target;
-	private List<String> features = new ArrayList<String>();
+	private final List<String> features = new ArrayList<String>();
+	private String modelName;
+	private boolean autoSaveModel = false;
 
 	/*
 	 * the fraction of training data held out to for testing against
@@ -46,5 +48,23 @@ public class TrainingOptions {
 
 	public double getTrainFactor() {
 		return 1.0 - this.testFactor;
+	}
+
+	public TrainingOptions setModelName(final String name) {
+		this.modelName = name;
+		return this;
+	}
+
+	public String getModelName() {
+		return modelName;
+	}
+
+	public TrainingOptions setAutoSave(final boolean autoSaveModel) {
+		this.autoSaveModel = autoSaveModel;
+		return this;
+	}
+
+	public boolean getAutoSave() {
+		return autoSaveModel;
 	}
 }

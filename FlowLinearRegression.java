@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.spark.ml.Model;
 import org.apache.spark.ml.Pipeline;
 import org.apache.spark.ml.PipelineModel;
 import org.apache.spark.ml.PipelineStage;
@@ -10,6 +9,7 @@ import org.apache.spark.ml.evaluation.RegressionEvaluator;
 import org.apache.spark.ml.feature.VectorAssembler;
 import org.apache.spark.ml.param.ParamMap;
 import org.apache.spark.ml.regression.LinearRegression;
+import org.apache.spark.ml.regression.LinearRegressionModel;
 import org.apache.spark.ml.tuning.ParamGridBuilder;
 import org.apache.spark.ml.tuning.TrainValidationSplit;
 import org.apache.spark.ml.tuning.TrainValidationSplitModel;
@@ -25,8 +25,9 @@ public class FlowLinearRegression implements TrainFlowAlgorithmInterface {
 	public static final String FEATURE_NAME = "_features";
 	public static final String PREDICTION_NAME = "_prediction";
 
-	private LinearRegression lr = new LinearRegression();
+	private final LinearRegression lr = new LinearRegression();
 
+	@Override
 	public DataFrame execute(DataFrame df, TrainingOptions opts) throws Exception {
 
 		ParamMap[] paramGrid = new ParamGridBuilder().addGrid(lr.regParam(), new double[] { 0.1, 0.01 })
@@ -52,7 +53,11 @@ public class FlowLinearRegression implements TrainFlowAlgorithmInterface {
 				.setEstimatorParamMaps(paramGrid).setTrainRatio(opts.getTrainFactor());
 
 		TrainValidationSplitModel tvsmodel = tvs.fit(training);
-		Model model = tvsmodel.bestModel();
+		LinearRegressionModel model = (LinearRegressionModel) tvsmodel.bestModel();
+
+		if (opts.getAutoSave()) {
+			model.save("/tmp/models/" + opts.getModelName());
+		}
 
 		DataFrame scoredDf = model.transform(test).withColumnRenamed(PREDICTION_NAME, "Predicted")
 				.withColumnRenamed(opts.getTargetVariable(), "Actual");
@@ -62,11 +67,8 @@ public class FlowLinearRegression implements TrainFlowAlgorithmInterface {
 		System.out.println("meanAbsoluteError: " + metrics.meanAbsoluteError());
 		System.out.println("meanSquaredError: " + metrics.meanSquaredError());
 		System.out.println("r2: " + metrics.r2());
-		scoredDf.show();
 
-		// model.transform(test).select("features", "label",
-		// "prediction").show();
-		return null;
+		return scoredDf;
 
 	}
 
