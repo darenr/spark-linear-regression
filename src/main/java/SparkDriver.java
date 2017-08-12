@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.apache.spark.SparkConf;
@@ -37,7 +38,7 @@ public class SparkDriver {
 			TrainingOptions opts = new TrainingOptions();
 
 			opts.setTargetVariable(targetVariable).addFeatureVariables(featureVariables);
-			opts.setAutoSave(true).setModelName("test");
+			opts.setAutoSave(true).setModelName("test-" + UUID.randomUUID().toString());
 
 			/*
 			 * try to load the data
