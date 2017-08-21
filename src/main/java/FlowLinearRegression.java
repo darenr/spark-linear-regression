@@ -64,9 +64,9 @@ public class FlowLinearRegression implements TrainFlowAlgorithmInterface {
 
 		RegressionMetrics metrics = new RegressionMetrics(scoredDf.select("Predicted", "Actual"));
 
-		System.out.println("meanAbsoluteError: " + metrics.meanAbsoluteError());
-		System.out.println("meanSquaredError: " + metrics.meanSquaredError());
-		System.out.println("r2: " + metrics.r2());
+		LOGGER.info("meanAbsoluteError: " + metrics.meanAbsoluteError());
+		LOGGER.info("meanSquaredError: " + metrics.meanSquaredError());
+		LOGGER.info("r2: " + metrics.r2());
 
 		return scoredDf;
 
