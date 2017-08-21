@@ -1,4 +1,8 @@
-#How to Run
+### Using Spark, run a regression model training using LinearRegression
+
+The code is adaptable to any Regression algorithm, this is just an example.
+
+### How to Run
 
 You'll need Spark 1.6
 
